@@ -18,11 +18,11 @@
 # Open investigations:
 
 - Unmounten der Disk im Release im drain script 
-  -> Passiert dann also vor monit stop, also könnte es sein, dass noch Daten geschrieben werden. 
-  -> Das kann eine Limitaiton sein. Würde besser werden mit Post_stop. 
+  - Passiert dann also vor monit stop, also könnte es sein, dass noch Daten geschrieben werden. 
+  - Das kann eine Limitaiton sein. Würde besser werden mit Post_stop. 
 - Nutze Links, um mit BOSH Mitteln eine Disk anzulegen im Manifest.
-  -> Dazu gibt es Möglichkeiten. 
-  -> Was passiert bei recreate. Wird alles die Disk wieder attached?
+  - Dazu gibt es Möglichkeiten. 
+  - Was passiert bei recreate. Wird alles die Disk wieder attached?
 - Attachen der Disk passiert durch CPI. Partitionieren passiert im Release Code.
 - Wieviel kann ich wieder verwenden vom Agent Code? Mounten?.. 
 
@@ -34,25 +34,25 @@ Random questions:
 
 How to partiton and mount a disk with parted:
 
---> Create partition table (gpt), 
-parted /dev/vdc
-(parted) print free
-(parted) mklabel gpt
-(parted) mkpart primary
+- Create partition table (gpt):
+ - parted /dev/vdc
+ - (parted) print free
+ - (parted) mklabel gpt
+ - (parted) mkpart primary
 
---> Create ext4 filesystem
-mkfs.ext4 -L secondDisk /dev/vdc1
+- Create ext4 filesystem
+- mkfs.ext4 -L secondDisk /dev/vdc1
 
 
---> Mounting to /var/vcap/second_disk
-mkdir /var/vcap/second_disk
-mount -t ext4 /dev/vdc1 /var/vcap/second_disk
+- Mounting to /var/vcap/second_disk
+ - mkdir /var/vcap/second_disk
+ - mount -t ext4 /dev/vdc1 /var/vcap/second_disk
 
 
 ## OUTPUT
 
 ### BEFORE:
-
+```
 dummy/740655c1-2693-496b-8a8d-e2bac23e088a:/dev# lsblk
 NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 vdb    252:16   0    1G  0 disk
@@ -62,9 +62,9 @@ vda    252:0    0   25G  0 disk
 ├─vda2 252:2    0    2G  0 part [SWAP]
 ├─vda3 252:3    0 20.2G  0 part /var/vcap/data
 └─vda1 252:1    0  2.9G  0 part /
+```
 
-
-
+```
 dummy/740655c1-2693-496b-8a8d-e2bac23e088a:/dev# parted -l
 Model: Virtio Block Device (virtblk)
 Disk /dev/vdb: 1074MB
@@ -94,10 +94,13 @@ Number  Start   End     Size    Type     File system     Flags
  2      3071MB  5161MB  2090MB  primary  linux-swap(v1)
  3      5162MB  26.8GB  21.7GB  primary  ext4
 
+```
+
 
 
 ### AFTER:
 
+```
 dummy/740655c1-2693-496b-8a8d-e2bac23e088a:/dev# lsblk
 NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 vdb    252:16   0    1G  0 disk
@@ -108,9 +111,10 @@ vda    252:0    0   25G  0 disk
 ├─vda2 252:2    0    2G  0 part [SWAP]
 ├─vda3 252:3    0 20.2G  0 part /var/vcap/data
 └─vda1 252:1    0  2.9G  0 part /
+```
 
 
-
+```
 dummy/740655c1-2693-496b-8a8d-e2bac23e088a:~# parted -l
 Model: Virtio Block Device (virtblk)
 Disk /dev/vdb: 1074MB
@@ -143,4 +147,5 @@ Number  Start   End     Size    Type     File system     Flags
  2      3071MB  5161MB  2090MB  primary  linux-swap(v1)
  3      5162MB  26.8GB  21.7GB  primary  ext4
 
+```
 
