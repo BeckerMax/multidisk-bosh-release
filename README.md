@@ -39,11 +39,18 @@ Random questions:
 
 How to partiton and mount a disk with parted:
 
+- Find the attached disk
+  - lsblk
+  
 - Create partition table (gpt):
   - parted /dev/vdc
-  - (parted) print free
+  - (parted) print (see Disk size)
   - (parted) mklabel gpt
-  - (parted) mkpart primary
+  - (parted) mkpart
+    - Partition Name: vdc1
+    - File system type: ext4
+    - Start? 0
+    - End? 5369
 
 - Create ext4 filesystem
   - mkfs.ext4 -L secondDisk /dev/vdc1
