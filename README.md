@@ -20,15 +20,28 @@
 - https://www.pivotaltracker.com/n/projects/1456570/stories/141576895
 - https://starkandwayne.com/blog/bosh-multiple-disks/
 
-# Open investigations:
+# Investigations:
+
+Can I attach a normal disk(persisitent_disk) and multiple other disks(persisten_disks)
+ -> no in a multidisk scenarion you (or the release) always needs to take care themselves of all disk partitioning mounting
+What happens in recreation with multiple disks?
+  - case: not mounted => detaches and attaches
+  - case: mounted => Recreation hangs in detaching disk with:
+    - Detaching disk vol-0846db733d9cade05
+    - D, [2019-01-07T12:26:46.046547 #14224] [canary_update(zookeeper/b6c33f33-d14b-4309-ac07-e7f51ed770b0 (0))] DEBUG -- DirectorJobRunner: [external-cpi] [cpi-385036] request: {"method":"detach_disk","arguments":["i-07dea98148649c754","vol-0846db733d9cade05"],"context":{"director_uuid":"4e5d8fd4-d402-40f5-9aeb-759605d35abe","request_id":"cpi-385036"},"api_version":2} with command: /var/vcap/jobs/aws_cpi/bin/cpi
+  - case I manually unmount with `umount /var/vcap/firstDisk`
+    - recreate triggers successful detached and attached
+    -  After mounting data is accessible again
+Can I create snapshots?
+  - `take-snapshot` does create a snapshot of both disks
+What happens in case of resize?
+  - Disk gets attached again but is neither partitioned nor mounted
+  - after partitioning and mounting the old data is now lost -> was there no
+    migration or did I delete it with repartitioning
 
 - Unmounten der Disk im Release im drain script 
   - Passiert dann also vor monit stop, also könnte es sein, dass noch Daten geschrieben werden. 
   - Das kann eine Limitaiton sein. Würde besser werden mit Post_stop. 
-- Nutze Links, um mit BOSH Mitteln eine Disk anzulegen im Manifest.
-  - Dazu gibt es Möglichkeiten. 
-  - Was passiert bei recreate. Wird alles die Disk wieder attached?
-- Attachen der Disk passiert durch CPI. Partitionieren passiert im Release Code.
 - Wieviel kann ich wieder verwenden vom Agent Code? Mounten?.. 
 
 Random questions:
@@ -44,8 +57,8 @@ How to partiton and mount a disk with parted:
   
 - Create partition table (gpt):
   - parted /dev/vdc
-  - (parted) print (see Disk size)
   - (parted) mklabel gpt
+  - (parted) print (see Disk size)
   - (parted) mkpart
     - Partition Name: vdc1
     - File system type: ext4
@@ -60,6 +73,8 @@ How to partiton and mount a disk with parted:
   - mkdir /var/vcap/second_disk
   - mount -t ext4 /dev/vdc1 /var/vcap/second_disk
 
+- Unmounting before detaching:
+  - umount /var/vcap/firstDisk
 
 ## OUTPUT
 
