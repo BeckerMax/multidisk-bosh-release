@@ -40,18 +40,18 @@ Random questions:
 How to partiton and mount a disk with parted:
 
 - Create partition table (gpt):
- - parted /dev/vdc
- - (parted) print free
- - (parted) mklabel gpt
- - (parted) mkpart primary
+  - parted /dev/vdc
+  - (parted) print free
+  - (parted) mklabel gpt
+  - (parted) mkpart primary
 
 - Create ext4 filesystem
-- mkfs.ext4 -L secondDisk /dev/vdc1
+  - mkfs.ext4 -L secondDisk /dev/vdc1
 
 
 - Mounting to /var/vcap/second_disk
- - mkdir /var/vcap/second_disk
- - mount -t ext4 /dev/vdc1 /var/vcap/second_disk
+  - mkdir /var/vcap/second_disk
+  - mount -t ext4 /dev/vdc1 /var/vcap/second_disk
 
 
 ## OUTPUT
