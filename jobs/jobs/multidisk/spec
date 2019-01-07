@@ -1,0 +1,16 @@
+---
+name: multidisk
+
+templates: {}
+
+packages: []
+
+properties: {
+  disk1.name:
+  description: name of the disk. Needs to match the name of the link in the manifest.
+  examples: disk-1
+  disk1.format:
+  description: file format of the disk. Supported are ext4,
+  example: ext4
+  disk1.mountPath
+

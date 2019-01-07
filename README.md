@@ -44,9 +44,7 @@ What happens in case of resize?
   - Das kann eine Limitaiton sein. Würde besser werden mit Post_stop. 
 - Wieviel kann ich wieder verwenden vom Agent Code? Mounten?.. 
 
-Random questions:
-- Does disk resizing work with 2 disks?
-
+- Change so that more than two disks can be attached
 
 # General Notes:
 
