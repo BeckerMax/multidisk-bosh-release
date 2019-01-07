@@ -1,0 +1,5 @@
+disk_types:
+- name: 1GB
+  disk_size: 1000
+- name: 2GB
+  disk_size: 2000

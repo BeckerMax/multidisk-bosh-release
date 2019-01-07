@@ -1,0 +1,47 @@
+---
+name: zookeeper
+
+releases:
+- name: zookeeper
+  version: 0.0.9
+  url: git+https://github.com/cppforlife/zookeeper-release
+
+stemcells:
+- alias: default
+  os: ubuntu-trusty
+  version: latest
+
+update:
+  canaries: 2
+  max_in_flight: 1
+  canary_watch_time: 5000-60000
+  update_watch_time: 5000-60000
+
+instance_groups:
+- name: zookeeper
+  azs: [z1, z2, z3]
+  instances: 1
+  jobs:
+  - name: zookeeper
+    release: zookeeper
+    provides:
+      conn: {shared: true}
+    properties: {}
+    consumes:
+      a-disk:
+        from: a-disk
+      b-disk:
+        from: b-disk
+  - name: status
+    release: zookeeper
+    properties: {}
+  vm_type: default
+  stemcell: default
+  networks:
+  - name: default
+
+  persistent_disks:
+  - name: a-disk                         # provides type=disk link
+    type: 1GB
+  - name: b-disk                          # provides type=disk link
+    type: 2GB

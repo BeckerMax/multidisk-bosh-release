@@ -15,6 +15,11 @@
   - BOSH attaches the Disk
   - Release mounts the disk
 
+# More Context:
+
+- https://www.pivotaltracker.com/n/projects/1456570/stories/141576895
+- https://starkandwayne.com/blog/bosh-multiple-disks/
+
 # Open investigations:
 
 - Unmounten der Disk im Release im drain script 
