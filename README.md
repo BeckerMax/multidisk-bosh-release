@@ -34,6 +34,7 @@ What happens in recreation with multiple disks?
     -  After mounting data is accessible again
 Can I create snapshots?
   - `take-snapshot` does create a snapshot of both disks
+  - How can the snapshot be applied using bosh?
 What happens in case of resize?
   - Disk gets attached again but is neither partitioned nor mounted
   - after partitioning and mounting the old data is now lost -> was there no

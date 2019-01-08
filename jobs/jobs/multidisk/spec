@@ -7,10 +7,20 @@ packages: []
 
 properties: {
   disk1.name:
-  description: name of the disk. Needs to match the name of the link in the manifest.
-  examples: disk-1
-  disk1.format:
-  description: file format of the disk. Supported are ext4,
-  example: ext4
+    description: name of the disk. Needs to match diskname from manifest.
+    examples: my-disk-1
+  disk1.file_system_type:
+    description: file system of the disk. All filetypes that mkfs supported are valid. Currently only ext4 is tested though.
+    example: ext4
   disk1.mountPath
-
+    description: Path to where the disk will be mounted
+    example: "/var/vcap/firstDisk"
+  disk2.name:
+    description: name of the disk. Needs to match diskname from manifest.
+    examples: my-disk-1
+  disk2.file_system_type:
+    description: file system of the disk. All filetypes that mkfs supported are valid. Currently only ext4 is tested though.
+    example: ext4
+  disk2.mountPath
+    description: Path to where the disk will be mounted
+    example: "/var/vcap/firstDisk"
