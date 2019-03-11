@@ -1,0 +1,69 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+exec 3>&1
+exec 1>> /var/vcap/sys/log/multidisk/pre-start.stdout.log
+exec 2>> /var/vcap/sys/log/multidisk/pre-start.stderr.log
+
+output_for_bosh() {
+	exit_code=$?
+
+	if [ $exit_code -eq 0 ]; then
+		echo "$(date): pre-start successful"
+	else
+		echo "$(date): pre-start failed"
+	fi
+
+	echo $exit_code >&3
+}
+
+trap output_for_bosh EXIT
+
+<% if p('disk1.name') %>
+  DISK_NAME="<%= "#{p('disk1.name')}" %>"
+  DISK_DIR="/var/vcap/instance/disks/$DISK_NAME"
+  MOUNT_PATH="/var/vcap/<%= "#{p('disk1.mountPath')}" %>"
+  FILE_SYSTEM_TYPE="<%= "#{p('disk1.file_system_type')}" %>"
+  PARTITION_NAME="/dev/$(lsblk -no kname $DISK_DIR | tail -n1)"
+
+  if ! e2fsck -n $PARTITION_NAME &>/dev/null
+  then
+    echo "No File system found under $PARTITION_NAME. Creating partition and filesystem."
+    parted --script "$DISK_DIR" 'mklabel gpt'
+    parted --script "$DISK_DIR" 'mkpart primary ext4 1 -1'
+    PARTITION_NAME="/dev/$(lsblk -no kname $DISK_DIR | tail -n1)"
+    mkfs -t ext4 -L "$DISK_NAME" "$PARTITION_NAME"
+  fi
+
+  if ! mountpoint -q "$MOUNT_PATH" &>/dev/null
+  then
+  echo "No mountpoint found under $MOUNT_PATH. Mounting $PARTITION_NAME to $MOUNT_PATH"
+    mkdir -p "$MOUNT_PATH"
+    mount -t "$FILE_SYSTEM_TYPE" "$PARTITION_NAME" "$MOUNT_PATH"
+  fi
+<% end -%>
+
+<% if p('disk2.name') %>
+  DISK_NAME="<%= "#{p('disk2.name')}" %>"
+  DISK_DIR="/var/vcap/instance/disks/$DISK_NAME"
+  MOUNT_PATH="/var/vcap/<%= "#{p('disk2.mountPath')}" %>"
+  FILE_SYSTEM_TYPE="<%= "#{p('disk2.file_system_type')}" %>"
+  PARTITION_NAME="/dev/$(lsblk -no kname $DISK_DIR | tail -n1)"
+
+  if ! e2fsck -n $PARTITION_NAME &>/dev/null
+  then
+    echo "No File system found under $PARTITION_NAME. Creating partition and filesystem."
+    parted --script "$DISK_DIR" 'mklabel gpt'
+    parted --script "$DISK_DIR" 'mkpart primary ext4 1 -1'
+    PARTITION_NAME="/dev/$(lsblk -no kname $DISK_DIR | tail -n1)"
+    mkfs -t ext4 -L "$DISK_NAME" "$PARTITION_NAME"
+  fi
+
+  if ! mountpoint -q "$MOUNT_PATH" &>/dev/null
+  then
+    echo "No mountpoint found under $MOUNT_PATH. Mounting $PARTITION_NAME to $MOUNT_PATH"
+    mkdir -p "$MOUNT_PATH"
+    mount -t "$FILE_SYSTEM_TYPE" "$PARTITION_NAME" "$MOUNT_PATH"
+  fi
+<% end -%>

@@ -47,13 +47,20 @@ What happens in case of resize?
 
 - Change so that more than two disks can be attached
 
+# Open Questions
+
+- What happens if there is a persistent_disk in addition configured?
+- Does resizing work?
+- Do I need to create a partition or can I just create a filesystem??
+- Do jobs have the right permissions to write to the disk? vcap seems not.
+
 # General Notes:
 
 How to partiton and mount a disk with parted:
 
 - Find the attached disk
   - lsblk
-  
+
 - Create partition table (gpt):
   - parted /dev/vdc
   - (parted) mklabel gpt
